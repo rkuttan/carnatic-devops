@@ -1,0 +1,35 @@
+version: "3"
+services:
+  carnatic-api:
+    image: rishikeshk/carnatic-api:1.0
+    expose:
+      - "80"
+    networks:
+      - carnatic-net
+    depends_on:
+      - carnatic-db
+    environment:
+      - DB_HOST=carnatic-db
+
+  carnatic-db:
+    image: mongo:4.1
+    volumes:
+      - carnatic-data:/data/db
+    networks:
+      - carnatic-net
+
+  carnatic-api-gateway:
+    image: rishikeshk/carnatic-api-gateway:1.0
+    ports:
+      - "443:443"
+    networks:
+      - carnatic-net
+    volumes:
+      - ~/tls/nginx.crt:/tls/nginx.crt
+      - ~/tls/nginx.key:/tls/nginx.key
+networks:
+  carnatic-net:
+
+volumes:
+  carnatic-data:
+    external: true
