@@ -19,7 +19,7 @@ services:
       - carnatic-net
 
   carnatic-api-gateway:
-    image: rishikeshk/carnatic-api-gateway:1.0
+    image: rishikeshk/carnatic-api-gateway:1.1
     ports:
       - "443:443"
     networks:
