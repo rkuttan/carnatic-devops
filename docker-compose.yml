@@ -1,7 +1,7 @@
 version: "3"
 services:
   carnatic-api:
-    image: rishikeshk/carnatic-api:1.0
+    image: rishikeshk/carnatic-api:latest
     expose:
       - "80"
     networks:
@@ -10,6 +10,7 @@ services:
       - carnatic-db
     environment:
       - DB_HOST=carnatic-db
+      - CORS_HOST_ORIGIN=https://localhost
 
   carnatic-db:
     image: mongo:4.1
@@ -20,13 +21,26 @@ services:
 
   carnatic-api-gateway:
     image: rishikeshk/carnatic-api-gateway:1.1
+    depends_on:
+      - carnatic-api
     ports:
-      - "443:443"
+      - "8443:443"
     networks:
       - carnatic-net
     volumes:
       - ~/tls/nginx.crt:/tls/nginx.crt
       - ~/tls/nginx.key:/tls/nginx.key
+
+  carnatic-ui:
+    image: rishikeshk/carnatic-ui:latest
+    ports:
+      - "443:4200"
+    depends_on:
+      - carnatic-api
+    environment:
+      - API_URL=http://carnatic-api-gateway    
+    networks:
+      - carnatic-net    
 networks:
   carnatic-net:
 
